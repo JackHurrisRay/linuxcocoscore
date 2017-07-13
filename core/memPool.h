@@ -19,8 +19,13 @@
 #include <list>
 using namespace std;
 
+#ifndef SAFE_DELETE
 #define SAFE_DELETE(x) delete x;x=NULL;
+#endif
+
+#ifndef SAFE_DELETE[]
 #define SAFE_DELETE[](x) delete[] x; x=NULL;
+#endif
 
 struct Locker
 {

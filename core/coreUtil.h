@@ -15,6 +15,7 @@
 #define COREUTIL_H
 
 #include "cocos2d.h"
+#include <string>
 
 class JackLabelAtlas:public cocos2d::LabelAtlas
 {
@@ -27,7 +28,22 @@ public:
         
 };
 
+namespace Core
+{
+    //time
+    double getCurrentSecond();
+    double getCurrentMSecond();
+    double getCurrentUSecond();
 
+    //rand value
+    int getRandValue();
+    int getRandValue(int max);
+    
+    //current directory
+    std::string getCurrentPath();
+
+    
+};
 
 
 

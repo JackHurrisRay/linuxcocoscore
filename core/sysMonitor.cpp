@@ -372,7 +372,7 @@ void render_init_monit(Texture2D* texture)
         __MONITOR_LABEL[i]->initWithString("INFOSAMPLER", texture, 12, 32 , '.');    
         
         __MONITOR_LABEL[i]->setAnchorPoint(Vec2(0.0, 1.0));
-        __MONITOR_LABEL[i]->setPosition(Vec2(0.0, _screenSize.height - i*12));        
+        __MONITOR_LABEL[i]->setPosition(Vec2(0.0, _screenSize.height - i*10));        
         
         __MONITOR_LABEL[i]->setColor(ccColor3B(255,0,0));
         __MONITOR_LABEL[i]->setScale(0.5);
@@ -407,5 +407,6 @@ void sysMonitor::updateInfo()
 
     ////////
     
-    
+    std::cout << "rand test:" << Core::getRandValue(100) << std::endl;
+
 }

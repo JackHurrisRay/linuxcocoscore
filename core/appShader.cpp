@@ -15,6 +15,7 @@
 #include <string>
 
 #include "appShader.h"
+#include "coreUtil.h"
 
 USING_NS_CC;
 
@@ -42,15 +43,9 @@ void appShader::init()
 
 void appShader::addProgram(ENUM_PROGRAM_TYPE _type, const char* _vsh, const char* _fsh)
 {
-    ////////
-    char szWorkDir[256] = {0};
-    if(!getcwd(szWorkDir, 256))
-    {
-        
-    }
-    
-    std::string _path;
-    _path = szWorkDir;
+    ////////    
+    Core::getCurrentPath();
+    std::string _path = Core::getCurrentPath();
     _path += "/";
     
     
