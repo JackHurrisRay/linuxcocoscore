@@ -14,8 +14,10 @@
 #ifndef COREUTIL_H
 #define COREUTIL_H
 
-#include "cocos2d.h"
 #include <string>
+
+#include "cocos2d.h"
+#include "json/rapidjson.h"
 
 class JackLabelAtlas:public cocos2d::LabelAtlas
 {
@@ -23,9 +25,12 @@ public:
 
     ////////
     void setIgnoreContentScaleFactorEx(bool bIgnoreContentScaleFactor);
-        
+    
+    ////////
     CREATE_FUNC(JackLabelAtlas);
         
+    
+    
 };
 
 namespace Core
@@ -41,6 +46,7 @@ namespace Core
     
     //current directory
     std::string getCurrentPath();
+    std::string getWritablePath();
 
     
 };

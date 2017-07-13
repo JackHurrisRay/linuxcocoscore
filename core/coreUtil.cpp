@@ -15,6 +15,8 @@
 #include <sys/time.h>
 #include <unistd.h>
 
+USING_NS_CC;
+
 void JackLabelAtlas::setIgnoreContentScaleFactorEx(bool bIgnoreContentScaleFactor)
 {
     cocos2d::LabelAtlas::setIgnoreContentScaleFactor(bIgnoreContentScaleFactor);
@@ -99,6 +101,12 @@ namespace Core
         return _path;
     }
 
+    std::string getWritablePath()
+    {
+        ////////
+        return FileUtils::getInstance()->getWritablePath();
+    };
+    
 };
 
 
