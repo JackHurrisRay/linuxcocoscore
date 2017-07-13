@@ -58,7 +58,7 @@ public:
     virtual ~JackThreadCys();
     virtual void begin();
 
-    void stop();
+    void stop(bool wait=false);
 };
 
 

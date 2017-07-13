@@ -13,6 +13,7 @@
 
 #include <unistd.h>
 #include <stdio.h>
+#include <iostream>
 
 #include "jackThread.h"
 
@@ -79,6 +80,9 @@ void JackThread::end()
     m_thread_status = 2;
     
     THREAD_COUNT -= 1;
+
+    std::cout << "thread is exit" << std::endl;
+            
 }
 
 ////////////////
@@ -128,10 +132,16 @@ void JackThreadCys::process()
     }    
 }
 
-void JackThreadCys::stop()
+void JackThreadCys::stop(bool wait)
 {
-    m_thread_status = 1;
-    
+    m_thread_status = 1;    
     THREAD_COUNT -= 1;
     
+    if( wait )
+    {
+        while( m_thread_status != 2 )
+        {
+            sleep(1);
+        }
+    }
 }

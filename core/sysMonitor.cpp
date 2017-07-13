@@ -354,7 +354,7 @@ void sysMonitor::monit_start()
 
 void sysMonitor::monit_end()
 {
-    m_monitThread->stop();
+    m_monitThread->stop(true);
     
     ////////
     for( int i=0; i<ESM_COUNT; i++ )
