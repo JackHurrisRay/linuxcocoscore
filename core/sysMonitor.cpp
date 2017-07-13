@@ -24,6 +24,7 @@ USING_NS_CC;
 #include <stdlib.h>
 
 #include "jackThread.h"
+#include "coreUtil.h"
 
 extern int THREAD_COUNT;
 
@@ -233,7 +234,7 @@ int get_pid(const char* process_name, const char* user = nullptr)
 }
 
 ////////
-cocos2d::LabelAtlas* __MONITOR_LABEL[ESM_COUNT];
+JackLabelAtlas* __MONITOR_LABEL[ESM_COUNT];
 
 void render_init_monit(Texture2D* texture);
 void render_sys_monit(Renderer* _renderer, const Mat4& identity);
@@ -334,14 +335,6 @@ void sysMonitor::update()
     for( int i=0; i<ESM_COUNT; i++ )
     {
         m_infoValue[i] = get_sys_info((ENUM_SYS_MONITOR)i);        
-        
-        /*
-        memset(_strTemp, 0, sizeof(_strTemp));
-        sprintf(_strTemp, "%s : %s", SYS_MONIT_NAME[i], m_infoValue[i].c_str());
-
-        //__MONITOR_LABEL[i]->setString(_strTemp);
-        */
-        
     }        
 }
 
@@ -372,14 +365,17 @@ void render_init_monit(Texture2D* texture)
 
     for( int i=0; i<ESM_COUNT; i++ )
     {
-        __MONITOR_LABEL[i] = cocos2d::LabelAtlas::create();           
-        __MONITOR_LABEL[i]->setIgnoreContentScaleFactor(true);
+        __MONITOR_LABEL[i] = JackLabelAtlas::create();                   
+        __MONITOR_LABEL[i]->setIgnoreContentScaleFactorEx(true);
     
         __MONITOR_LABEL[i]->retain();    
         __MONITOR_LABEL[i]->initWithString("INFOSAMPLER", texture, 12, 32 , '.');    
         
         __MONITOR_LABEL[i]->setAnchorPoint(Vec2(0.0, 1.0));
-        __MONITOR_LABEL[i]->setPosition(Vec2(0.0, _screenSize.height - i*32));        
+        __MONITOR_LABEL[i]->setPosition(Vec2(0.0, _screenSize.height - i*12));        
+        
+        __MONITOR_LABEL[i]->setColor(ccColor3B(255,0,0));
+        __MONITOR_LABEL[i]->setScale(0.5);
     }    
 
 }
