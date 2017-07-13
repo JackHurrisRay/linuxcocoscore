@@ -11,7 +11,10 @@
  * Created on 2017年7月11日, 下午7:45
  */
 
+#include <iostream>
 #include "sysMonitor.h"
+#include "cocos2d.h"
+USING_NS_CC;
 
 ////////
 #include <stdio.h>
@@ -20,6 +23,22 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "jackThread.h"
+
+extern int THREAD_COUNT;
+
+////////
+const char* SYS_MONIT_NAME[] =
+{
+    "CPU TOTAL",
+    "CPU PROCESS",
+    "CPU PERCENT",
+    "MEM",
+    "V MEM",
+    "THREAD COUNT"    
+};
+
+////////
 #define VMRSS_LINE 17
 #define VMSIZE_LINE 13
 #define PROCESS_ITEM 14
@@ -214,13 +233,21 @@ int get_pid(const char* process_name, const char* user = nullptr)
 }
 
 ////////
-sysMonitor::sysMonitor() {
+cocos2d::LabelAtlas* __MONITOR_LABEL[ESM_COUNT];
+
+void render_init_monit(Texture2D* texture);
+void render_sys_monit(Renderer* _renderer, const Mat4& identity);
+
+sysMonitor::sysMonitor():
+m_monitThread(NULL)
+{    
+    m_monitThread = new JackThreadCys();
 }
 
-sysMonitor::sysMonitor(const sysMonitor& orig) {
-}
-
-sysMonitor::~sysMonitor() {
+sysMonitor::~sysMonitor() 
+{
+    delete m_monitThread;
+        
 }
 
 bool sysMonitor::init()
@@ -245,7 +272,14 @@ bool sysMonitor::init()
             printf("当前进程ID：%d\n", pid);  
             printf("当前进程名：%s\n", ++strProcessName);  
             printf("当前进程路径：%s\n", strProcessPath);  
-    }  
+    }         
+    
+    m_selfPID = pid;
+    
+    ////////
+    cocos2d::__FUNC_INIT_MONITOR = &render_init_monit;
+    cocos2d::__FUNC_RENDER_MONITOR = &render_sys_monit;
+
   
     return true; 
 }
@@ -282,8 +316,100 @@ const std::string sysMonitor::get_sys_info(ENUM_SYS_MONITOR _type)
             sprintf(_info, "%ld", get_proc_virtualmem(m_selfPID));                        
             break;
         }
+        case ESM_THREAD_COUNT:
+        {
+            sprintf(_info, "%d", THREAD_COUNT);                        
+            break;
+        }
     }
     
     return _info;
 }
 
+void sysMonitor::update()
+{
+    ////////
+    char _strTemp[256];
+    
+    for( int i=0; i<ESM_COUNT; i++ )
+    {
+        m_infoValue[i] = get_sys_info((ENUM_SYS_MONITOR)i);        
+        
+        /*
+        memset(_strTemp, 0, sizeof(_strTemp));
+        sprintf(_strTemp, "%s : %s", SYS_MONIT_NAME[i], m_infoValue[i].c_str());
+
+        //__MONITOR_LABEL[i]->setString(_strTemp);
+        */
+        
+    }        
+}
+
+void sysMonitor::monit_start()
+{
+    ////////
+    m_monitThread->setFunc(std::bind(&sysMonitor::update, this), NULL);
+    m_monitThread->begin();
+}
+
+void sysMonitor::monit_end()
+{
+    m_monitThread->stop();
+    
+    ////////
+    for( int i=0; i<ESM_COUNT; i++ )
+    {
+        CC_SAFE_RELEASE_NULL(__MONITOR_LABEL[i]);        
+    }
+    
+}
+
+////////////////
+void render_init_monit(Texture2D* texture)
+{
+    ////////
+    const cocos2d::Size _screenSize = cocos2d::Director::getInstance()->getWinSize();
+
+    for( int i=0; i<ESM_COUNT; i++ )
+    {
+        __MONITOR_LABEL[i] = cocos2d::LabelAtlas::create();           
+        __MONITOR_LABEL[i]->setIgnoreContentScaleFactor(true);
+    
+        __MONITOR_LABEL[i]->retain();    
+        __MONITOR_LABEL[i]->initWithString("INFOSAMPLER", texture, 12, 32 , '.');    
+        
+        __MONITOR_LABEL[i]->setAnchorPoint(Vec2(0.0, 1.0));
+        __MONITOR_LABEL[i]->setPosition(Vec2(0.0, _screenSize.height - i*32));        
+    }    
+
+}
+
+////////////////
+void render_sys_monit(Renderer* _renderer, const Mat4& identity)
+{
+    ////////
+    sysMonitor::Instance()->updateInfo();
+    
+    ////////
+    for( int i=0; i<ESM_COUNT; i++ )
+    {
+        __MONITOR_LABEL[i]->visit(_renderer, identity, 0);        
+    }
+}
+
+void sysMonitor::updateInfo()
+{
+    ////////
+    char _strTemp[256];
+    for( int i=0; i<ESM_COUNT; i++ )
+    {
+        memset(_strTemp, 0, sizeof(_strTemp));
+        sprintf(_strTemp, "%s : %s", SYS_MONIT_NAME[i], m_infoValue[i].c_str());
+
+        __MONITOR_LABEL[i]->setString(_strTemp);                
+    }    
+
+    ////////
+    
+    
+}

@@ -19,6 +19,9 @@
 #include <list>
 using namespace std;
 
+#define SAFE_DELETE(x) delete x;x=NULL;
+#define SAFE_DELETE[](x) delete[] x; x=NULL;
+
 struct Locker
 {
     pthread_mutex_t _mutex;

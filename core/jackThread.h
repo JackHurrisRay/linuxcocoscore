@@ -37,9 +37,11 @@ protected:
 public:
     
     JackThread(JACK_FUNC_THREAD _fProcess, JACK_FUNC_THREAD _fEnd);
-    virtual ~JackThread();
-    
+    virtual ~JackThread();    
     virtual void begin();
+    
+    void setFunc(JACK_FUNC_THREAD _fProcess, JACK_FUNC_THREAD _fEnd);
+
     
 };
 
@@ -51,10 +53,11 @@ protected:
     friend void* func_cys_thread(void* arg);
     
 public:
-    JackThreadCys(JACK_FUNC_THREAD _fProcess, JACK_FUNC_THREAD _fEnd);
+    JackThreadCys(JACK_FUNC_THREAD _fProcess = NULL, JACK_FUNC_THREAD _fEnd = NULL);
+    
     virtual ~JackThreadCys();
-
     virtual void begin();
+
     void stop();
 };
 

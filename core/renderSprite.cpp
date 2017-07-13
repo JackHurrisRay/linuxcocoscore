@@ -65,6 +65,8 @@ bool renderSprite::init()
     
     this->setGLProgram(_pgp);
     
+    this->retain();
+    
     return true;
 }
 

@@ -16,6 +16,8 @@
 
 #include <string>
 
+class JackThreadCys;
+
 enum ENUM_SYS_MONITOR
 {
     ESM_TIME_CPU = 0,
@@ -23,7 +25,10 @@ enum ENUM_SYS_MONITOR
     ESM_TIME_CPU_PERCENT,
     ESM_MEM_PROCESS,
     ESM_VMEM_PROCESS,
+    
+    ESM_THREAD_COUNT,
         
+    ESM_COUNT,
 };
 
 class sysMonitor 
@@ -31,12 +36,16 @@ class sysMonitor
     
 protected:
     
-    unsigned int  m_selfPID;
+    unsigned int   m_selfPID;
+    JackThreadCys* m_monitThread;
+    
+    std::string    m_infoValue[ESM_COUNT];
     
     sysMonitor();
-    sysMonitor(const sysMonitor& orig);
     virtual ~sysMonitor();
-
+    
+    void update();
+    
 public:
     
     static sysMonitor* Instance()
@@ -49,6 +58,11 @@ public:
     
     const std::string get_sys_info(ENUM_SYS_MONITOR _type);
     
+    void monit_start();
+    void monit_end();
+    
+    void updateInfo();    
+       
 };
 
 #endif /* SYSMONITOR_H */

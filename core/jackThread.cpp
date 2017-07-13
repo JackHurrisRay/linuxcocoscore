@@ -11,7 +11,13 @@
  * Created on 2017年7月11日, 下午8:37
  */
 
+#include <unistd.h>
+#include <stdio.h>
+
 #include "jackThread.h"
+
+////////////////
+int THREAD_COUNT = 0;
 
 ////////////////
 void* func_thread(void* arg)
@@ -32,6 +38,12 @@ JackThread::~JackThread()
     
 }
 
+void JackThread::setFunc(JACK_FUNC_THREAD _fProcess, JACK_FUNC_THREAD _fEnd)
+{
+    m_funcProcess = _fProcess;
+    m_funcEnd     = _fEnd;    
+}
+
 void JackThread::begin()
 {
     m_thread_status = 0;
@@ -42,6 +54,8 @@ void JackThread::begin()
             &func_thread,
             this
         );
+    
+    THREAD_COUNT += 1;
 }
 
 void JackThread::process()
@@ -63,6 +77,8 @@ void JackThread::end()
     }
     
     m_thread_status = 2;
+    
+    THREAD_COUNT -= 1;
 }
 
 ////////////////
@@ -94,6 +110,9 @@ void JackThreadCys::begin()
             &func_cys_thread,
             this
         );
+
+    THREAD_COUNT += 1;    
+    
 }
 
 void JackThreadCys::process()
@@ -104,10 +123,15 @@ void JackThreadCys::process()
         {
             m_funcProcess();        
         }        
+        
+        sleep(1);
     }    
 }
 
 void JackThreadCys::stop()
 {
     m_thread_status = 1;
+    
+    THREAD_COUNT -= 1;
+    
 }
