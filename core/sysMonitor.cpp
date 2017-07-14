@@ -405,8 +405,7 @@ void sysMonitor::updateInfo()
         __MONITOR_LABEL[i]->setString(_strTemp);                
     }    
 
-    ////////
-    
-    std::cout << "rand test:" << Core::getRandValue(100) << std::endl;
+    ////////    
+    //std::cout << "rand test:" << Core::getRandValue(100) << std::endl;
 
 }
